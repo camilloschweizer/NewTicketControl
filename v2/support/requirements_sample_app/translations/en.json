@@ -1,8 +1,0 @@
-{
-  "app": {
-    "installation_instructions": "Find the app in the Zendesk marketplace.",
-    "long_description": "Requirements sample app.",
-    "short_description": "Requirements sample app.",
-    "name": "Requirements Sample App"
-  }
-}
