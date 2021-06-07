@@ -4,13 +4,14 @@
 </head>
 <body>
 
-	<h1 id='dropdown'>
+	<h1 id='dropdown' style="display: block; font-size: medium; font-family: 'Trebuchet MS';">Test
 		<ul>
 			<li>Test1</li>
 			<li>Test2</li>
 
 		</ul>
 	</h1>
+	'Requester email:' <span id="requester-email"></span>
 
   <section data-main>Loading...</section>
   <!-- https://github.com/zendesk/zendesk_app_framework_sdk -->
@@ -19,6 +20,10 @@
     // Initialise the Zendesk JavaScript API client
     // https://developer.zendesk.com/apps/docs/apps-v2
 
+	client = ZAFClient.init();
+  	client.get('ticket.requester.email').then(function(data) {
+    	$('#requester-email').html(data['ticket.requester.email']);
+  	});
 
 	var portal = client.get('currentAccount.subdomain');
 	var seite, mail = '';
