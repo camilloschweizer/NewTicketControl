@@ -12,19 +12,23 @@
 
 
 	var portal = client.get('currentAccount.subdomain');
-	var seite = '';
+	var seite, mail = '';
 
 	if (portal.indexOf("digitec.ch") >= 0) {
     	seite = 'digitec.ch';
+		mail = '@digitech.ch';
   	}
   	else if (window.location.hostname.indexOf("galaxus.ch") >= 0) {
     	seite = 'galaxus.ch';
+		mail = '@galaxus.ch';
   	}
   	else{
     	seite = 'galaxus.de';
+		mail = '@galaxus.de';
   	}
 
 	console.log(seite);
+	console.log(mail);
 
 
 	
