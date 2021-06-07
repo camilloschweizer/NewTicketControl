@@ -9,6 +9,24 @@
   <script>
     // Initialise the Zendesk JavaScript API client
     // https://developer.zendesk.com/apps/docs/apps-v2
+
+
+	var portal = client.get('currentAccount.subdomain');
+	var seite = '';
+
+	if (portal.indexOf("digitec.ch") >= 0) {
+    	seite = 'digitec.ch';
+  	}
+  	else if (window.location.hostname.indexOf("galaxus.ch") >= 0) {
+    	seite = 'galaxus.ch';
+  	}
+  	else{
+    	seite = 'galaxus.de';
+  	}
+
+	console.log(seite);
+
+
 	
     var client = ZAFClient.init();
 	var user;
