@@ -1,0 +1,20 @@
+{
+  "name": "AutoAssign",
+  "author": {
+    "name": "Camillo Schweizer",
+    "email": "camillo.schweizer@digitecgalaxus.ch",
+    "url": ""
+  },
+  "defaultLocale": "en",
+  "private": true,
+  "location": {
+    "support": {
+      "new_ticket_sidebar": {
+	"autoHide": true, 
+         "url": "assets/newTicketSidebar.html"      
+    }
+}
+  },
+  "version": "2.0",
+  "frameworkVersion": "2.0"
+}
