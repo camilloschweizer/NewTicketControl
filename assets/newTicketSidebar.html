@@ -3,7 +3,30 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@zendeskgarden/css-bedrock@7.0" type="text/css">
 </head>
 <body>
+	<div class="form">
 
+		<form>
+		<select class="address">
+		  {{#if newTicket}}
+			{{#defaultAddress}}
+			  <option value="{{email}}" selected>Default: {{email}}</option>
+			{{/defaultAddress}}
+		  {{else}}
+			{{#if recipientAddress}}{{#recipientAddress}}
+			  <option value="{{email}}" selected>Current: {{email}}</option>
+			{{else}}
+			  <option disabled selected>Choose one...</option>
+			{{/recipientAddress}}
+			{{/if}}
+		  {{/if}}
+		  {{#each addresses}}
+			<option value="{{email}}">
+			  {{email}}
+			</option>
+		  {{/each}}
+		</select>
+		</form>
+	</div>
 	<h1 id='dropdown' style="display: block; font-size: medium; font-family: 'Trebuchet MS';">Test
 		<ul>
 			<li>Test1</li>
@@ -25,6 +48,9 @@
     	$('#requester-email').html(data['ticket.requester.email']);
   	});
 
+
+
+
 	var portal = client.get('currentAccount.subdomain');
 	var seite, mail = '';
 
@@ -45,7 +71,42 @@
 	console.log(mail);
 
 
-	
+	function addressen(addresses) {
+      this.addresses = addresses;
+      var defaultAddress,
+          recipientAddress,
+          otherAddresses,
+          newTicket,
+          currentAddress = this.ticket().recipient(),
+          currentLocation = this.currentLocation(),
+          newTickets = this.setting("new_tickets?"),
+          existingTickets = this.setting("existing_tickets?");
+      if(currentLocation == 'new_ticket_sidebar' && newTickets === true) {
+        newTicket = true;
+        defaultAddress = _.filter(this.addresses, function(address) { return address.default === true;});
+        otherAddresses = _.filter(this.addresses, function(address) { return address.default !== true;});
+        this.switchTo('pickOne', {
+          newTicket: newTicket,
+          defaultAddress: defaultAddress,
+          recipientAddress: recipientAddress,
+          addresses: otherAddresses
+        });
+      } else if (currentLocation == 'ticket_sidebar' && existingTickets === true) {
+        newTicket = false;
+        recipientAddress = _.filter(this.addresses, function(address) { return address.email == currentAddress;});
+        otherAddresses = _.filter(this.addresses, function(address) { return address.email != currentAddress;});
+        this.switchTo('pickOne', {
+          newTicket: newTicket,
+          defaultAddress: defaultAddress,
+          recipientAddress: recipientAddress,
+          addresses: otherAddresses
+        });
+      }
+    }
+
+
+
+
     var client = ZAFClient.init();
 	var user;
 	var group;
@@ -107,6 +168,7 @@
     client.on('app.registered', function() {
 	assignTicket();
 	changeRecipient();
+	addressen();
 	  
     });
   </script>
