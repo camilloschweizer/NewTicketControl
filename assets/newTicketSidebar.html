@@ -3,6 +3,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@zendeskgarden/css-bedrock@7.0" type="text/css">
 </head>
 <body>
+	<header>
+		<span class="logo"/><span class="title"><h4>{{setting "name"}}</h4></span>
+	  </header>
+	  <section data-main/>
+	  
 	<div class="form">
 
 		<form>
@@ -71,7 +76,33 @@
 	console.log(mail);
 
 
-	function addressen(addresses) {
+	(function() {
+  return {
+    events: {
+      'app.created':'loadOptions',
+      'change .address':'onAddressSelected'
+    },
+    requests: {
+      getAddresses: function(next_page) {
+        return {
+          url: next_page || '/api/v2/recipient_addresses.json',
+          success: function(response) {
+            this.supportAddresses = this.supportAddresses.concat(response.recipient_addresses);
+            if(response.next_page) {
+              this.ajax('getAddresses', response.next_page);
+            } else {
+              this.parseResults(this.supportAddresses);
+              // console.log('Got all the addresses.')
+            }
+          }
+        };
+      }
+    },
+    loadOptions: function() {
+      this.supportAddresses = [];
+      this.ajax('getAddresses');
+    },
+    parseResults: function(addresses) {
       this.addresses = addresses;
       var defaultAddress,
           recipientAddress,
@@ -102,7 +133,33 @@
           addresses: otherAddresses
         });
       }
-    }
+    },
+    onAddressSelected: function(e) {
+      e.preventDefault();
+      var address = this._brandEmail(),
+          location = this.currentLocation();
+      if(location == 'new_ticket_sidebar') {
+        this.ticket().recipient(address);
+        services.notify( this.I18n.t('notice.ticket_created', { id: this.ticket().id(), email: address }) );
+      } else if(location == 'ticket_sidebar') {
+      // if location is ticket_sidebar
+        var id = this.ticket().id();
+        this.ticket().recipient(address);
+        // IF successful
+        services.notify( this.I18n.t('notice.ticket_updated', { id: this.ticket().id(), email: address }) );
+      }
+    },
+    _brandEmail: function(){
+      return this.$('select.address').val();
+    },
+    // _brand: function(){
+    //   return this.ticket().customField('custom_field_%@'.fmt(this.setting('brand_field_id')));
+    // },
+    // _mapping: _.memoize(function(){
+    //   return JSON.parse(this.setting('mapping'));
+    // })
+  };
+}());
 
 
 
